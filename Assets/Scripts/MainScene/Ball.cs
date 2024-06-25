@@ -15,7 +15,7 @@ public class Ball : NetworkBehaviour
     public Vector3 vel;
     private float waitTime = 1.0f;
     private float nextUpdateTime;
-    private float speed = 2;
+    public float speed = 2;
     private float chargeSpeed = 0.2f;
     [SyncVar]
     public bool isHitted = false;
@@ -69,7 +69,6 @@ public class Ball : NetworkBehaviour
             vel *= -1;
             isHitted = true;
             rb.velocity = transform.rotation * vel.normalized * hitForce + new Vector3(0, 8, 0);
-            pc.isLastHit = true;
         }
     }
 

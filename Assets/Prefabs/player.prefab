@@ -1711,6 +1711,8 @@ GameObject:
   - component: {fileID: 3513261272406143437}
   - component: {fileID: 8222168355896500817}
   - component: {fileID: -3386359717670859395}
+  - component: {fileID: 1928580081519698837}
+  - component: {fileID: -3364822212907458769}
   m_Layer: 0
   m_Name: player
   m_TagString: player
@@ -1808,14 +1810,14 @@ MonoBehaviour:
   speed: 4
   loverBorder: -10
   upperBorder: 10
+  isRightHandSwing: 0
+  isLeftHandSwing: 0
+  centerMode: 0
   score: 0
   games: 0
   sets: 0
   anim: {fileID: 0}
   isSwinging: 0
-  isRightHandSwing: 0
-  isLeftHandSwing: 0
-  centerMode: 0
   isLastHit: 0
   ball: {fileID: 0}
   hudPrefab: {fileID: 4994671077904974195, guid: 43709d98e56f4e24392ebc4c89058185, type: 3}
@@ -2008,6 +2010,37 @@ MonoBehaviour:
   syncInterval: 0
   clientAuthority: 1
   animator: {fileID: 225398258307500094}
+--- !u!114 &1928580081519698837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7644674025769122628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e9de6f04017615409c6016b3e635726, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _rb: {fileID: 8300624855001324176}
+--- !u!114 &-3364822212907458769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7644674025769122628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22d9b21ac4a9fe34bb96706431c15db3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &7731854721392881753
 GameObject:
   m_ObjectHideFlags: 0

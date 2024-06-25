@@ -9,8 +9,9 @@ public class GameController : NetworkBehaviour
     public PlayerControl player2;
     public Transform ballSpawnPosP1;
     public Transform ballSpawnPosP2;
-    public GameObject ballPrefab;
+    public Ball ballComp;
     public GameObject ball;
+    
     [SyncVar]
     public bool isGameEnded = false;
     [SyncVar]
@@ -23,10 +24,11 @@ public class GameController : NetworkBehaviour
     public int fieldRightXBorder = 17;
 
     public UIHandler uiHandler;
-
     public SoundManager sM;
 
-    
+    [SyncVar(hook = nameof(OnBallPositionChanged))]
+    private Vector3 ballPosition;
+
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -46,7 +48,7 @@ public class GameController : NetworkBehaviour
             StopGame();
         }
     }
-    
+
     private void Start()
     {
         players = GameObject.FindGameObjectsWithTag("player");
@@ -55,11 +57,13 @@ public class GameController : NetworkBehaviour
         ballSpawnPosP1 = players[0].transform.Find("PlayerSpawnball");
         ballSpawnPosP2 = players[1].transform.Find("PlayerSpawnball");
         ball = GameObject.FindGameObjectWithTag("Ball");
+        ballComp = ball.GetComponent<Ball>();
         uiHandler = GameObject.Find("Canvas(Clone)").GetComponent<UIHandler>();
         uiHandler.gameCon = this;
         sM = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>();
+        player1.ball = ballComp;
+        player2.ball = ballComp;
     }
-    
 
     void FixedUpdate()
     {
@@ -79,14 +83,14 @@ public class GameController : NetworkBehaviour
         {
             winnersMsg = "Player 1 is the Champion!";
             isGameEnded = true;
-            RpcShowWinner(winnersMsg); // Добавьте этот вызов
+            RpcShowWinner(winnersMsg);
         }
 
         if (player2.sets - player1.sets > 2)
         {
             winnersMsg = "Player 2 is the Champion!";
             isGameEnded = true;
-            RpcShowWinner(winnersMsg); // Добавьте этот вызов
+            RpcShowWinner(winnersMsg);
         }
     }
 
@@ -155,24 +159,32 @@ public class GameController : NetworkBehaviour
             RpcUpdateScore(player1.score, player2.score);
         }
     }
-    
+
     [Server]
     void RespawnBall()
     {
         Transform ballSpawnPos = isFirstPlayerServe ? ballSpawnPosP1 : ballSpawnPosP2;
         isFirstPlayerServe = !isFirstPlayerServe;
 
-        if (ball != null)
-        {
-            NetworkServer.Destroy(ball);
-        }
+        ball.transform.position = ballSpawnPos.position;
+        ballPosition = ball.transform.position; // Update the SyncVar
 
-        ball = Instantiate(ballPrefab, ballSpawnPos.position, ballSpawnPos.rotation);
-        NetworkServer.Spawn(ball);
-        player1.ball = ball.GetComponent<Ball>();
-        player2.ball = ball.GetComponent<Ball>();
+        if (ball.transform.position.z < 0)
+        {
+            ballComp.vel = Vector3.forward * ballComp.speed;
+        }
+        else
+        {
+            ballComp.vel = -Vector3.forward * ballComp.speed;
+        }
+        ballComp.rb.velocity = ballComp.vel.normalized * ballComp.hitForce + new Vector3(0, 8, 0);
     }
-    
+
+    void OnBallPositionChanged(Vector3 oldPosition, Vector3 newPosition)
+    {
+        ball.transform.position = newPosition;
+    }
+
     void ScoreControl()
     {
         if (ball == null || isGameEnded) return;
@@ -188,25 +200,26 @@ public class GameController : NetworkBehaviour
             {
                 CmdUpdateScore(1);
             }
-            sM.PlayGoal();
+
+            RpcPlayGoal();
             RespawnBall();
         }
         else if (ball.transform.position.z > player2.transform.position.z)
         {
             if (isBallWithinFieldBounds)
             {
-                Debug.Log("loss p2");
                 CmdUpdateScore(1);
             }
             else
             {
                 CmdUpdateScore(2);
             }
-            sM.PlayGoal();
+
+            RpcPlayGoal();
             RespawnBall();
         }
     }
-    
+
     public void StopGame()
     {
         if (NetworkServer.active && NetworkClient.isConnected)
@@ -256,5 +269,11 @@ public class GameController : NetworkBehaviour
     {
         player1.sets = sets1;
         player2.sets = sets2;
+    }
+
+    [ClientRpc]
+    void RpcPlayGoal()
+    {
+        sM.PlayGoal();
     }
 }

@@ -11,8 +11,10 @@ public class MenuUI : MonoBehaviour
 {
     public TMP_InputField ipInputField;
     public TMP_InputField portInputField;
+    public TMP_InputField hostPortInputField;
     public GameObject menu;
     public GameObject connMenu;
+    public GameObject hostMenu;
 
     private NetworkManager networkManager;
 
@@ -38,11 +40,39 @@ public class MenuUI : MonoBehaviour
             Debug.LogError("Invalid port number");
         }
     }
+    
+    public void OnCreateHostButtonClicked()
+    {
+        string portText = hostPortInputField.text;
+
+        if (int.TryParse(portText, out int port))
+        {
+            networkManager.GetComponent<KcpTransport>().port = (ushort)port;
+            
+            networkManager.StartHost();
+        }
+        else
+        {
+            Debug.LogError("Invalid port number");
+        }
+    }
 
     public void OnConnectMenuButtonClicked()
     {
         menu.SetActive(false);
         connMenu.SetActive(true);
+    }
+    
+    public void OnHostConnectMenuButtonClicked()
+    {
+        menu.SetActive(false);
+        hostMenu.SetActive(true);
+    }
+    
+    public void OnHostBackButtonClick()
+    {
+        menu.SetActive(true);
+        hostMenu.SetActive(false);
     }
 
     public void OnBackButtonClick()
