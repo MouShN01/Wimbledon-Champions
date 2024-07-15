@@ -25,3 +25,10 @@ https://youtu.be/AV--4SZcHzA
 Dawnload link:
 -
 https://drive.google.com/drive/folders/1CMsTHQo-CV8AS5QZwW76y2QI3MDDuKmm?usp=sharing
+
+Screenshots
+-
+![menu](https://github.com/user-attachments/assets/a88c2ae3-7186-49cf-b085-d1f506f83933)
+![Connection](https://github.com/user-attachments/assets/2c034d9a-c9ea-4f30-8e2d-dd33e6e33e6f)
+![hostSide](https://github.com/user-attachments/assets/b698cf02-c9da-4939-9e11-03c85ab53e1c)
+![winMessageHost](https://github.com/user-attachments/assets/ebf8b223-b127-4bf2-ba6f-6534297a77c7)
